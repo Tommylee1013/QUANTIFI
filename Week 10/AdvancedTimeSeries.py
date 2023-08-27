@@ -122,4 +122,68 @@ def get_bSADF_test_statistics(logP, minSL, constant, lags):
         test_statistics.append(bsadf)
     test_statistics = pd.Series(test_statistics)
     test_statistics.index = logP.index
+    test_statistics.name = 'GSADF'
     return test_statistics
+
+def pmf1(msg, w: int):
+    lib = {}
+    if not isinstance(msg, str):
+        msg = ''.join(map(str, msg))
+    for i in range(w, len(msg)):
+        msg_ = msg[i - w: i]
+        if msg_ not in lib:
+            lib[msg_] = [i - w]
+        else:
+            lib[msg_] = lib[msg_] + [i - w]
+    length = float(len(msg) - w)
+    pmf = {i: len(lib[i]) / length for i in lib}
+    return pmf
+
+def plug_in(msg, w: int):
+    pmf = pmf1(msg, w)
+    out = -sum([pmf[i] * np.log2(pmf[i]) for i in pmf]) / w
+    return out, pmf
+
+def lempel_ziv_lib(msg: str) -> list:
+    i, lib = 1, [msg[0]]
+    while i < len(msg):
+        for j in range(i, len(msg)):
+            msg_ = msg[i: j + 1]
+            if msg_ not in lib:
+                lib.append(msg_)
+                break
+        i = j + 1
+    return lib
+
+def match_length(msg: str, i: int, n: int):
+    subS = ''
+    for l in range(n):
+        msg1 = msg[i: i + 1 + l]
+        for j in range(i - n, i):
+            msg0 = msg[j: j + 1 + l]
+            if msg1 == msg0:
+                subS = msg1
+                break
+    return len(subS) + 1, subS
+
+def konto(msg, window = None) -> dict:
+    out = {'num': 0, 'sum': 0, 'subS': []}
+    if not isinstance(msg, str):
+        msg = ''.join(map(str, msg))
+    if window is None:
+        points = range(1, len(msg) // 2 + 1)
+    else:
+        window = min(window, len(msg) // 2)
+        points = range(window, len(msg) - window + 1)
+    for i in points:
+        if window is None:
+            l, msg_ = match_length(msg, i, i)
+            out['sum'] += np.log2(i + 1) / l  # to avoid Doeblin condition
+        else:
+            l, msg_ = match_length(msg, i, window)
+            out['sum'] += np.log2(window + 1) / l  # to avoid Doeblin condition
+        out['subS'].append(msg_)
+        out['num'] += 1
+    out['h'] = out['sum'] / out['num']
+    out['r'] = 1 - out['h'] / np.log2(len(msg))  # redundancy, 0 <= r <= 1
+    return out
