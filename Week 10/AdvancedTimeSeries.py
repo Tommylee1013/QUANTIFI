@@ -228,24 +228,30 @@ def BarSampling(df, column, threshold, tick = False) :
     return df.iloc[idx].drop_duplicates()
 
 def plot_bar_counts(tick, volume, dollar):
-    f, ax = plt.subplots(figsize=(15, 5))
+    f, ax = plt.subplots(figsize = (10, 4))
     tick.plot(ax=ax, ls='-', label='tick count')
     volume.plot(ax=ax, ls='--', label='volume count')
     dollar.plot(ax=ax, ls='-.', label='dollar count')
     ax.set_title('Scaled Bar Counts')
+    ax.grid(False)
     ax.legend()
     return
 
 def plotSampleData(ref, sub, bar_type, *args, **kwds) :
-    f, axes = plt.subplots(3, sharex=True, sharey=True, figsize=(10, 7))
-    ref.plot(*args, **kwds, ax=axes[0], label='price')
-    sub.plot(*args, **kwds, ax=axes[0], marker='X', ls='', label=bar_type)
+    f, axes = plt.subplots(3, sharex = True, sharey = True, figsize = (9, 7))
+    ref.plot(*args, **kwds, ax = axes[0], label = 'price')
+    sub.plot(*args, **kwds, ax = axes[0], marker = 'X', ls = '', label = bar_type)
     axes[0].legend()
-    ref.plot(*args, **kwds, ax=axes[1], marker='o', label='price')
-    sub.plot(*args, **kwds, ax=axes[2], marker='X', ls='',
-             color='r', label=bar_type)
-    for ax in axes[1:]: ax.legend()
+    axes[0].grid(False)
+    ref.plot(*args, **kwds, ax = axes[1], marker = 'o', label = 'price')
+    sub.plot(*args, **kwds, ax = axes[2], marker = 'X', ls = '',
+             color = 'r', label = bar_type)
+    plt.grid(False)
+    for ax in axes[1:]:
+        ax.legend()
+        ax.grid(False)
     plt.tight_layout()
+    plt.grid(False)
     return
 
 def select_sample_data(ref, sub, price_col, date):
