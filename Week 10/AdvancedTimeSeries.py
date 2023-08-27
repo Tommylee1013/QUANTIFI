@@ -187,3 +187,68 @@ def konto(msg, window = None) -> dict:
     out['h'] = out['sum'] / out['num']
     out['r'] = 1 - out['h'] / np.log2(len(msg))  # redundancy, 0 <= r <= 1
     return out
+
+def generate_buckets(series: pd.Series, sigma: float) -> list:
+    segments = []
+    cnt = 1
+    while series.min() + (cnt - 1) * sigma < series.max():
+        segments.append([series.min() + (cnt - 1) * sigma, series.min() + cnt * sigma])
+        cnt += 1
+    return segments
+
+def encode_single_obs(obs: float, segments: list) -> str:
+    for i in range(len(segments)):
+        if segments[i][0] <= obs < segments[i][1]:
+            code = chr(48 + i)
+            return code
+
+def OptimizeBins(nObs, corr = None) :
+    if corr is None :
+        z = (8 + 324 * nObs + 12 * (36 * nObs + 729 * nObs ** 2)** 0.5)**(1/3)
+        b = round(z/6 + 2/(3*z) + 1/3)
+    else : b = round(2**(-0.5) * (1 + (1+24*nObs/(1-corr**2))**0.5)**0.5)
+    return int(b)
+
+def BarSampling(df, column, threshold, tick = False) :
+    t = df[column]
+    ts = 0
+    idx = []
+    if tick:
+        for i, x in enumerate(t):
+            ts += 1
+            if ts >= threshold:
+                idx.append(i)
+                ts = 0
+    else:
+        for i, x in enumerate(t):
+            ts += x
+            if ts >= threshold:
+                idx.append(i)
+                ts = 0
+    return df.iloc[idx].drop_duplicates()
+
+def plot_bar_counts(tick, volume, dollar):
+    f, ax = plt.subplots(figsize=(15, 5))
+    tick.plot(ax=ax, ls='-', label='tick count')
+    volume.plot(ax=ax, ls='--', label='volume count')
+    dollar.plot(ax=ax, ls='-.', label='dollar count')
+    ax.set_title('Scaled Bar Counts')
+    ax.legend()
+    return
+
+def plotSampleData(ref, sub, bar_type, *args, **kwds) :
+    f, axes = plt.subplots(3, sharex=True, sharey=True, figsize=(10, 7))
+    ref.plot(*args, **kwds, ax=axes[0], label='price')
+    sub.plot(*args, **kwds, ax=axes[0], marker='X', ls='', label=bar_type)
+    axes[0].legend()
+    ref.plot(*args, **kwds, ax=axes[1], marker='o', label='price')
+    sub.plot(*args, **kwds, ax=axes[2], marker='X', ls='',
+             color='r', label=bar_type)
+    for ax in axes[1:]: ax.legend()
+    plt.tight_layout()
+    return
+
+def select_sample_data(ref, sub, price_col, date):
+    xdf = ref[price_col].loc[date]
+    xtdf = sub[price_col].loc[date]
+    return xdf, xtdf
