@@ -58,9 +58,9 @@ def getBinsFromTrend(molecule, close, span):
             df_tval.loc[dt1] = tValLinR(df1.values) #calculates t-statistics on period
         dt1 = df_tval.replace([-np.inf, np.inf, np.nan], 0).abs().idxmax() #get largest t-statistics calculated over span period
 
-        print(df_tval.index[-1])
-        print(dt1)
-        print(abs(df_tval.values).argmax() + minWindow)
+        #print(df_tval.index[-1])
+        #print(dt1)
+        #print(abs(df_tval.values).argmax() + minWindow)
         out.loc[idx, ['t1', 'tVal', 'bin', 'windowSize']] = df_tval.index[-1], df_tval[dt1], np.sign(df_tval[dt1]), abs(df_tval.values).argmax() + minWindow #prevent leakage
     out['t1'] = pd.to_datetime(out['t1'])
     out['bin'] = pd.to_numeric(out['bin'], downcast='signed')
@@ -102,7 +102,7 @@ if __name__ == '__main__':
     plt.savefig('fig5.2.png')
     plt.clf()
     plt.close()
-    plt.scatter(df1.index, df0.loc[df1.index].values, c=df1['bin'].values, cmap='vipridis')
+    plt.scatter(df1.index, df0.loc[df1.index].values, c=df1['bin'].values, cmap='viridis')
 
     #Test methods
     ols_tvalue = tValLinR( np.array([3.0, 3.5, 4.0]) )
