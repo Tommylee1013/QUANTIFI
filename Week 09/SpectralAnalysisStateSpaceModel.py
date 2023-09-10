@@ -1,14 +1,9 @@
 import numpy as np
 import pandas as pd
-from numpy import pi
 import matplotlib.pyplot as plt
-from cycler import cycler
 from filterpy.kalman import FixedLagSmoother, KalmanFilter
 from filterpy.common import Q_discrete_white_noise
 import statsmodels.api as sm
-
-cols = plt.get_cmap('tab10').colors
-plt.rcParams['axes.prop_cycle'] = cycler(color = cols)
 
 def plot_2d(m, title = '') :
     plt.imshow(m)
@@ -96,6 +91,7 @@ class SingularSpectrum(object):
 
         plt.xlim(min - 0.5, max_rnge + 0.5)
         plt.ylim(max_rnge + 0.5, min - 0.5)
+
 class LocalLinearTrend(sm.tsa.statespace.MLEModel):
     def __init__(self, endog):
         k_states = k_posdef = 2
@@ -143,7 +139,7 @@ def calculate_rts(data, noise : int = 1 , Q : float = 0.001) -> pd.DataFrame :
     fk.P*= 10.
     fk.R = noise
     fk.Q = Q_discrete_white_noise(dim=2, dt=1., var=Q)
-    zs = data["TAVG"]
+    zs = data
     mu, cov, _, _ = fk.batch_filter(zs)
     M, P, C, _ = fk.rts_smoother(mu, cov)
 
@@ -171,7 +167,7 @@ def calculate_fl(data, N = 4) -> pd.DataFrame :
     kf.R *= 5.
     kf.Q = Q_discrete_white_noise(dim=2, dt=1., var=0.001)
 
-    zs = data["TAVG"]
+    zs = data
     nom = np.array([t / 2. for t in range(len(zs))])
 
     for z in zs:
