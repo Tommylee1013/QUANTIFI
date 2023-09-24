@@ -29,11 +29,14 @@ Quantifi Sogang
 ![chap7.png](Image%2Fchap7.png)
 ![chap7_2.png](Image%2Fchap7_2.png)
 
-- Week 08 GARCH & Markov-Switching Models
+- Week 08 Conditional Heteroscedastisity Model
 ![chap8.png](Image%2Fchap8.png)
 ![chap8_2.png](Image%2Fchap8_2.png)
 
 - Week 09 Spectral Analysis & State Space Model
+
+![spectral.png](Image%2Fspectral.png)
+![rts_smoothing.png](Image%2Frts_smoothing.png)
 
 - Week 10 High-Frequency Data Analysis & Market Microstructure
 
