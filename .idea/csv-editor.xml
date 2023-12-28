@@ -3,6 +3,20 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
+        <entry key="/week13 Classification/GDP.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/week13 Classification/WorldData.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/week14 Dimension Reduction &amp; Clustering/selected_tickers_info.csv">
           <value>
             <Attribute>
@@ -18,6 +32,13 @@
           </value>
         </entry>
         <entry key="/week14 Dimension Reduction &amp; Clustering/stock_prices.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/week15 Ensemble Models/credit_risk.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
