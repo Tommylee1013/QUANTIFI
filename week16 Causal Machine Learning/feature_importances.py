@@ -135,11 +135,6 @@ def single_feature_importance(clf, X, y, cv_gen, sample_weight = None, scoring =
         imp.loc[feat, 'std'] = feat_cross_val_scores.std() * feat_cross_val_scores.shape[0] ** -.5
     return imp
 
-def probability_weighted_accuracy(y_true, y_pred, probabilities):
-    correct_predictions = (y_true == y_pred)
-    weighted_accuracy = np.sum(correct_predictions * probabilities) / np.sum(probabilities)
-    return weighted_accuracy
-
 def plot_feature_importance(importance_df, oob_score, oos_score, save_fig = False, output_path = None):
     plt.figure(figsize = (10, importance_df.shape[0] / 5))
     importance_df.sort_values('mean', ascending = True, inplace = True)
